@@ -107,6 +107,11 @@
     render();
   }
 
+  function resetTestProfile() {
+    state.profile = HS.storage.resetProfile(HS.storage.TEST_PROFILE_NAME);
+    render();
+  }
+
   // ---------- Central click handling ----------
   appEl.addEventListener('click', function (e) {
     var el = e.target.closest('[data-nav]');
@@ -126,6 +131,7 @@
       case 'quiz-next': nextQuizQuestion(); break;
       case 'quiz-flag': flagCurrentQuestion(); break;
       case 'tier-set': setTier(el.dataset.tier); break;
+      case 'reset-test-profile': resetTestProfile(); break;
       case 'back': history.length > 1 ? history.back() : go('home'); break;
       default: break;
     }
@@ -135,7 +141,8 @@
   function boot() {
     HS.data.load().then(function () {
       var lastProfile = HS.storage.getActiveProfileName();
-      if (lastProfile && HS.storage.PROFILE_NAMES.indexOf(lastProfile) !== -1) {
+      var knownNames = HS.storage.PROFILE_NAMES.concat([HS.storage.TEST_PROFILE_NAME]);
+      if (lastProfile && knownNames.indexOf(lastProfile) !== -1) {
         pickProfile(lastProfile);
       } else {
         go('profile-select');

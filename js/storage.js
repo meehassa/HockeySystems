@@ -3,6 +3,7 @@
   'use strict';
 
   var PROFILE_NAMES = ['Ollie', 'Eva'];
+  var TEST_PROFILE_NAME = 'Test';
   var ACTIVE_KEY = 'hs:activeProfile';
   var DEFAULT_TIER = 'peewee';
 
@@ -67,6 +68,14 @@
     saveProfile(profile);
   }
 
+  // Wipes a profile's stored progress/streak/flags back to defaults. Used by
+  // the Test profile's "Reset test data" button so poking around never needs
+  // Ollie's or Eva's data touched.
+  function resetProfile(name) {
+    localStorage.removeItem(profileKey(name));
+    return defaultProfile(name);
+  }
+
   function recordAnswer(profile, question, systemId, correct) {
     profile.progress[question.id] = {
       correct: correct,
@@ -112,11 +121,13 @@
   window.HS = window.HS || {};
   window.HS.storage = {
     PROFILE_NAMES: PROFILE_NAMES,
+    TEST_PROFILE_NAME: TEST_PROFILE_NAME,
     loadProfile: loadProfile,
     saveProfile: saveProfile,
     getActiveProfileName: getActiveProfileName,
     setActiveProfileName: setActiveProfileName,
     setTier: setTier,
+    resetProfile: resetProfile,
     recordAnswer: recordAnswer,
     recordFlag: recordFlag,
     markStudyDayComplete: markStudyDayComplete

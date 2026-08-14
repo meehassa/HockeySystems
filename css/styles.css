@@ -121,6 +121,9 @@ button { font-family: inherit; }
 .profile-name { display: block; font-size: 1.2rem; font-weight: 700; }
 .profile-meta { display: block; color: var(--muted); font-size: 0.9rem; text-transform: capitalize; }
 .profile-card > span:not(.profile-avatar) { display: flex; flex-direction: column; }
+.profile-select-divider { color: var(--muted); font-size: 0.85rem; text-align: center; margin: 22px 0 12px; }
+.profile-card-test { border: 2px dashed var(--muted); background: transparent; }
+.profile-avatar-test { background: var(--bg-elevated); color: var(--text); }
 
 /* ---------- Home ---------- */
 .home-stats { display: flex; gap: 12px; margin-bottom: 20px; }

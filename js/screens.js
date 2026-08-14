@@ -52,10 +52,22 @@
         '</button>';
     }).join('');
 
+    var testName = HS.storage.TEST_PROFILE_NAME;
+    var testProfile = HS.storage.loadProfile(testName);
+    var testOverall = HS.mastery.overallMastery(testProfile);
+    var testCard = '' +
+      '<button class="profile-card profile-card-test" data-nav="pick-profile" data-profile="' + esc(testName) + '">' +
+        '<span class="profile-avatar profile-avatar-test">🧪</span>' +
+        '<span class="profile-name">Test Profile</span>' +
+        '<span class="profile-meta">' + esc(testProfile.tier) + ' · ' + testOverall.pct + '% known · resettable</span>' +
+      '</button>';
+
     return '' +
       '<div class="screen screen-profile-select">' +
         '<div class="brand"><span class="brand-emoji">🏒</span><h1>Hockey Systems</h1><p>Who’s playing?</p></div>' +
         '<div class="profile-cards">' + cards + '</div>' +
+        '<p class="profile-select-divider">Just poking around?</p>' +
+        '<div class="profile-cards">' + testCard + '</div>' +
       '</div>';
   }
 
@@ -322,6 +334,15 @@
         }).join('') + '</ul>'
       : '<p class="empty-state">No flagged questions.</p>';
 
+    var isTest = profile.name === HS.storage.TEST_PROFILE_NAME;
+    var testSection = isTest
+      ? '<section class="detail-section">' +
+          '<h3>Test profile</h3>' +
+          '<p class="muted">This profile is just for trying things out — it never counts toward Ollie’s or Eva’s progress.</p>' +
+          '<button class="big-btn" data-nav="reset-test-profile"><span>🗑️ Reset Test Data</span></button>' +
+        '</section>'
+      : '';
+
     return '' +
       '<div class="screen screen-settings">' +
         header('Settings', 'home') +
@@ -333,8 +354,9 @@
               '<button class="tier-btn' + (profile.tier === 'bantam' ? ' tier-btn-active' : '') + '" data-nav="tier-set" data-tier="bantam">Bantam (14U)</button>' +
             '</div>' +
           '</section>' +
+          testSection +
           '<section class="detail-section">' +
-            '<h3>Flagged questions <span class="muted">(for grown-up review)</span></h3>' +
+            '<h3>Flagged questions <span class="muted">(Ollie &amp; Eva, for grown-up review)</span></h3>' +
             flagList +
           '</section>' +
         '</div>' +
