@@ -71,7 +71,14 @@
     var initial = (animation && animation.beats && animation.beats[0] && animation.beats[0].positions) || {};
     var selectedIds = selectedActorId || [];
 
-    var actorEls = actors.map(function (a) {
+    // Puck always paints last (on top) so a player standing right next to it
+    // — which happens constantly, since that's how possession is shown —
+    // never covers it.
+    var paintOrder = actors.slice().sort(function (a, b) {
+      return (a.id === 'puck' ? 1 : 0) - (b.id === 'puck' ? 1 : 0);
+    });
+
+    var actorEls = paintOrder.map(function (a) {
       var pos = initial[a.id] || [100, 50];
       var isPuck = a.id === 'puck';
       var isSel = selectedIds.indexOf(a.id) !== -1;
@@ -79,7 +86,7 @@
       var nav = isPuck ? '' : (' data-nav="select-actor" data-actor-id="' + esc(a.id) + '" role="button" aria-label="' + esc(a.label) + '"');
       var glow = isSel ? '<circle r="14" class="rink-marker-glow"/>' : '';
       var body = isPuck
-        ? '<circle r="6" class="rink-puck-dot"/>'
+        ? '<circle r="7.5" class="rink-puck-halo"/><circle r="5.5" class="rink-puck-dot"/>'
         : '<circle r="10" class="rink-marker-dot' + (isSel ? ' rink-marker-dot-active' : '') + '"/>' +
           '<text class="rink-marker-num" dy="3">' + esc(a.label) + '</text>';
       return '<g id="actor-' + esc(a.id) + '" class="' + cls + '" transform="translate(' + pos[0] + ',' + pos[1] + ')"' + nav + '>' +
