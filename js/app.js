@@ -12,6 +12,7 @@
   };
 
   var appEl = document.getElementById('app');
+  var animatorController = null;
 
   function render() {
     var ctx = { profile: state.profile, quiz: state.quiz };
@@ -29,6 +30,54 @@
       default: appEl.innerHTML = '<div class="screen"><p class="empty-state">Loading…</p></div>';
     }
     window.scrollTo(0, 0);
+    mountAnimator();
+  }
+
+  // The replay player writes directly to the SVG DOM every animation frame,
+  // independent of render(). Any full re-render destroys and recreates that
+  // SVG, so the old controller (and its in-flight rAF loop) must be torn
+  // down and a fresh one wired up whenever system-detail is on screen.
+  function mountAnimator() {
+    if (animatorController) { animatorController.destroy(); animatorController = null; }
+    if (state.screen !== 'system-detail') return;
+
+    var system = HS.data.getSystemById(state.params.systemId);
+    if (!system || !system.animation) return;
+
+    var svgEl = appEl.querySelector('.rink');
+    var controlsEl = appEl.querySelector('.anim-controls');
+    var captionEl = appEl.querySelector('.anim-caption');
+    if (!svgEl || !controlsEl || !captionEl) return;
+
+    var playBtn = controlsEl.querySelector('.anim-btn-play');
+    var replayBtn = controlsEl.querySelector('.anim-btn-replay');
+    var stepDots = Array.prototype.slice.call(controlsEl.querySelectorAll('.anim-step-dot'));
+
+    function updateCaption(beatIndex) {
+      captionEl.textContent = system.animation.beats[beatIndex].caption;
+      stepDots.forEach(function (dot, i) { dot.classList.toggle('anim-step-dot-active', i === beatIndex); });
+    }
+    function updatePlayIcon(isPlaying) {
+      playBtn.textContent = isPlaying ? '⏸' : '▶';
+      playBtn.setAttribute('aria-label', isPlaying ? 'Pause' : 'Play');
+    }
+
+    animatorController = HS.animator.create({
+      svgEl: svgEl,
+      actors: system.animation.actors,
+      beats: system.animation.beats,
+      onBeatChange: updateCaption,
+      onPlayStateChange: updatePlayIcon
+    });
+
+    playBtn.addEventListener('click', function () {
+      if (animatorController.isPlaying()) animatorController.pause();
+      else animatorController.play();
+    });
+    replayBtn.addEventListener('click', function () { animatorController.reset(); });
+    stepDots.forEach(function (dot, i) {
+      dot.addEventListener('click', function () { animatorController.seek(i); });
+    });
   }
 
   function go(screen, params) {
@@ -117,6 +166,16 @@
     render();
   }
 
+  function selectActor(actorId) {
+    var system = HS.data.getSystemById(state.params.systemId);
+    if (!system || !system.animation) return;
+    var actor = system.animation.actors.find(function (a) { return a.id === actorId; });
+    if (!actor || !actor.positionRole) return;
+    var idx = (system.positions || []).findIndex(function (p) { return p.role === actor.positionRole; });
+    if (idx === -1) return;
+    selectRole(idx);
+  }
+
   // ---------- Central click handling ----------
   appEl.addEventListener('click', function (e) {
     var el = e.target.closest('[data-nav]');
@@ -138,6 +197,7 @@
       case 'tier-set': setTier(el.dataset.tier); break;
       case 'reset-test-profile': resetTestProfile(); break;
       case 'select-role': selectRole(Number(el.dataset.roleIndex)); break;
+      case 'select-actor': selectActor(el.dataset.actorId); break;
       case 'back': history.length > 1 ? history.back() : go('home'); break;
       default: break;
     }

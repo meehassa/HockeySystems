@@ -1,7 +1,10 @@
-// Simple generic rink diagram: outline + the three zones, with the system's
-// zone (from its `zone` field in the JSON) highlighted, plus tappable numbered
-// markers for each position — generic index-based placement, never per-system
-// custom art, so it never needs to know about individual systems.
+// Simple generic rink diagram. Two render modes:
+//  - renderRink: static, numbered tap-to-explore markers (used when a system
+//    has no `animation` data yet — always-available fallback).
+//  - renderAnimatedRink: labeled puck + per-player dots at their beat-0
+//    position, driven by HS.animator for the "Watch It Happen" replay.
+// Neither knows about individual systems — both just walk whatever
+// positions/actors they're given.
 (function () {
   'use strict';
 
@@ -11,6 +14,25 @@
   function esc(str) {
     return String(str == null ? '' : str)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function baseIce(zone) {
+    var highlight = ZONE_LABELS[zone] ? zone : 'neutral';
+    function zoneOpacity(z) { return z === highlight ? '0.85' : '0.18'; }
+    return {
+      highlight: highlight,
+      svg: '' +
+        '<rect x="2" y="2" width="196" height="96" rx="26" ry="26" class="rink-ice"/>' +
+        '<rect x="2" y="2" width="65" height="96" rx="26" ry="26" class="rink-zone rink-zone-defensive" style="opacity:' + zoneOpacity('defensive') + '"/>' +
+        '<rect x="67" y="2" width="66" height="96" class="rink-zone rink-zone-neutral" style="opacity:' + zoneOpacity('neutral') + '"/>' +
+        '<rect x="133" y="2" width="65" height="96" rx="26" ry="26" class="rink-zone rink-zone-offensive" style="opacity:' + zoneOpacity('offensive') + '"/>' +
+        '<line x1="67" y1="2" x2="67" y2="98" class="rink-blueline"/>' +
+        '<line x1="133" y1="2" x2="133" y2="98" class="rink-blueline"/>' +
+        '<line x1="100" y1="2" x2="100" y2="98" class="rink-centerline"/>' +
+        '<circle cx="100" cy="50" r="9" class="rink-centercircle"/>' +
+        '<line x1="12" y1="2" x2="12" y2="98" class="rink-goalline"/>' +
+        '<line x1="188" y1="2" x2="188" y2="98" class="rink-goalline"/>'
+    };
   }
 
   function renderMarkers(zone, positions, selectedIndex) {
@@ -32,27 +54,46 @@
   }
 
   function renderRink(zone, positions, selectedIndex) {
-    var highlight = ZONE_LABELS[zone] ? zone : 'neutral';
-    function zoneOpacity(z) { return z === highlight ? '0.85' : '0.18'; }
     var idx = (typeof selectedIndex === 'number') ? selectedIndex : -1;
+    var ice = baseIce(zone);
+    return '' +
+      '<svg viewBox="0 0 200 100" class="rink" role="img" aria-label="' + (ZONE_LABELS[ice.highlight] || 'Rink') + ' highlighted">' +
+        ice.svg +
+        renderMarkers(ice.highlight, positions, idx) +
+        '<rect x="2" y="2" width="196" height="96" rx="26" ry="26" class="rink-border"/>' +
+      '</svg>';
+  }
+
+  // actors: [{id, label, positionRole}], beats: [{caption, positions:{id:[x,y]}}]
+  function renderAnimatedRink(zone, animation, selectedActorId) {
+    var ice = baseIce(zone);
+    var actors = (animation && animation.actors) || [];
+    var initial = (animation && animation.beats && animation.beats[0] && animation.beats[0].positions) || {};
+    var selectedIds = selectedActorId || [];
+
+    var actorEls = actors.map(function (a) {
+      var pos = initial[a.id] || [100, 50];
+      var isPuck = a.id === 'puck';
+      var isSel = selectedIds.indexOf(a.id) !== -1;
+      var cls = 'rink-actor ' + (isPuck ? 'rink-actor-puck' : 'rink-actor-player') + (isSel ? ' rink-actor-selected' : '');
+      var nav = isPuck ? '' : (' data-nav="select-actor" data-actor-id="' + esc(a.id) + '" role="button" aria-label="' + esc(a.label) + '"');
+      var glow = isSel ? '<circle r="14" class="rink-marker-glow"/>' : '';
+      var body = isPuck
+        ? '<circle r="6" class="rink-puck-dot"/>'
+        : '<circle r="10" class="rink-marker-dot' + (isSel ? ' rink-marker-dot-active' : '') + '"/>' +
+          '<text class="rink-marker-num" dy="3">' + esc(a.label) + '</text>';
+      return '<g id="actor-' + esc(a.id) + '" class="' + cls + '" transform="translate(' + pos[0] + ',' + pos[1] + ')"' + nav + '>' +
+        glow + body + '</g>';
+    }).join('');
 
     return '' +
-      '<svg viewBox="0 0 200 100" class="rink" role="img" aria-label="' + (ZONE_LABELS[highlight] || 'Rink') + ' highlighted">' +
-        '<rect x="2" y="2" width="196" height="96" rx="26" ry="26" class="rink-ice"/>' +
-        '<rect x="2" y="2" width="65" height="96" rx="26" ry="26" class="rink-zone rink-zone-defensive" style="opacity:' + zoneOpacity('defensive') + '"/>' +
-        '<rect x="67" y="2" width="66" height="96" class="rink-zone rink-zone-neutral" style="opacity:' + zoneOpacity('neutral') + '"/>' +
-        '<rect x="133" y="2" width="65" height="96" rx="26" ry="26" class="rink-zone rink-zone-offensive" style="opacity:' + zoneOpacity('offensive') + '"/>' +
-        '<line x1="67" y1="2" x2="67" y2="98" class="rink-blueline"/>' +
-        '<line x1="133" y1="2" x2="133" y2="98" class="rink-blueline"/>' +
-        '<line x1="100" y1="2" x2="100" y2="98" class="rink-centerline"/>' +
-        '<circle cx="100" cy="50" r="9" class="rink-centercircle"/>' +
-        '<line x1="12" y1="2" x2="12" y2="98" class="rink-goalline"/>' +
-        '<line x1="188" y1="2" x2="188" y2="98" class="rink-goalline"/>' +
-        renderMarkers(highlight, positions, idx) +
+      '<svg viewBox="0 0 200 100" class="rink" role="img" aria-label="' + (ZONE_LABELS[ice.highlight] || 'Rink') + ' with players">' +
+        ice.svg +
+        actorEls +
         '<rect x="2" y="2" width="196" height="96" rx="26" ry="26" class="rink-border"/>' +
       '</svg>';
   }
 
   window.HS = window.HS || {};
-  window.HS.rink = { renderRink: renderRink, ZONE_LABELS: ZONE_LABELS };
+  window.HS.rink = { renderRink: renderRink, renderAnimatedRink: renderAnimatedRink, ZONE_LABELS: ZONE_LABELS };
 })();

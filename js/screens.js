@@ -171,6 +171,40 @@
         '</ul></section>'
       : '';
 
+    var hasAnimation = !!(system.animation && system.animation.beats && system.animation.beats.length);
+    var rinkSection;
+
+    if (hasAnimation) {
+      var highlightedActorIds = selected
+        ? system.animation.actors.filter(function (a) { return a.positionRole === selected.role; }).map(function (a) { return a.id; })
+        : [];
+      var stepDots = system.animation.beats.map(function (b, i) {
+        return '<button class="anim-step-dot' + (i === 0 ? ' anim-step-dot-active' : '') + '" aria-label="Go to step ' + (i + 1) + '"></button>';
+      }).join('');
+
+      rinkSection = '' +
+        '<section class="detail-section">' +
+          '<h3>Watch it happen</h3>' +
+          HS.rink.renderAnimatedRink(system.zone, system.animation, highlightedActorIds) +
+          '<div class="anim-controls">' +
+            '<button class="anim-btn anim-btn-play" aria-label="Play">▶</button>' +
+            '<div class="anim-steps">' + stepDots + '</div>' +
+            '<button class="anim-btn anim-btn-replay" aria-label="Replay">↺</button>' +
+          '</div>' +
+          '<p class="anim-caption">Tap ▶ to watch the play develop.</p>' +
+          jobCard +
+          '<div class="role-chip-row">' + roleChips + '</div>' +
+        '</section>';
+    } else {
+      rinkSection = '' +
+        '<section class="detail-section">' +
+          '<h3>Tap the ice to see who does what</h3>' +
+          HS.rink.renderRink(system.zone, positions, selectedIndex) +
+          jobCard +
+          '<div class="role-chip-row">' + roleChips + '</div>' +
+        '</section>';
+    }
+
     return '' +
       '<div class="screen screen-detail">' +
         header(system.name, 'library') +
@@ -181,12 +215,7 @@
             '<span class="tag tag-pct">' + m.pct + '% known</span>' +
           '</div>' +
           '<p class="detail-summary">' + esc(system.summary) + '</p>' +
-          '<section class="detail-section">' +
-            '<h3>Tap the ice to see who does what</h3>' +
-            HS.rink.renderRink(system.zone, positions, selectedIndex) +
-            jobCard +
-            '<div class="role-chip-row">' + roleChips + '</div>' +
-          '</section>' +
+          rinkSection +
           variants +
           '<button class="big-btn big-btn-primary" data-nav="quiz-start" data-system-id="' + esc(system.id) + '">' +
             '<span class="big-btn-emoji">❓</span><span>Quiz This System</span>' +

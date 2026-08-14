@@ -1,5 +1,5 @@
 // Bump this on every deploy so clients pick up the new files.
-var CACHE_NAME = 'hockey-systems-v2';
+var CACHE_NAME = 'hockey-systems-v3';
 
 var PRECACHE_URLS = [
   './',
@@ -10,6 +10,7 @@ var PRECACHE_URLS = [
   'js/data.js',
   'js/mastery.js',
   'js/rink.js',
+  'js/animator.js',
   'js/screens.js',
   'js/app.js',
   'systems-seed.json',
