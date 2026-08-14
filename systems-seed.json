@@ -1,0 +1,200 @@
+{
+  "_readme": {
+    "purpose": "Seed content for the hockey-systems learning app. This is a WORKED EXAMPLE of the data shape and validation rules. Add all future systems in this same format.",
+    "validation_rules": {
+      "verified_true_requires": ">=2 independent sources from different domains agree on the fact. Each supporting source stored below with a short quote + URL.",
+      "verified_false": "Single-source, or sources conflict on a fundamental. Excluded from the mastery %/scoring until a human reviews.",
+      "variants": "Where sources legitimately differ (e.g. aggressive vs passive), store BOTH as labeled variants. Do NOT quiz on the contested detail — only on shared fundamentals.",
+      "no_quote_no_verify": "A fact is never marked verified without the actual source text stored beside it."
+    },
+    "tiers": {
+      "peewee": "12U. Foundational only: basic breakouts, regroups, simple forechecks, basic D-zone coverage. One concept at a time. No formal special teams.",
+      "bantam": "14U. Adds neutral-zone play, layered D-zone, power play, penalty kill, faceoff plays."
+    },
+    "scoring_note": "Each player's mastery % is measured ONLY against systems in their own tier and ONLY over verified:true questions."
+  },
+
+  "systems": [
+    {
+      "id": "fc-1-2-2",
+      "name": "1-2-2 Forecheck",
+      "tier": "peewee",
+      "category": "forecheck",
+      "zone": "offensive",
+      "summary": "The most common and most youth-friendly forecheck. Only ONE forward (F1) chases the puck deep and steers the puck-carrier to one side. F2 and F3 sit above the puck in the middle, taking away the boards and the middle lane. The two defensemen hold the blue line. Goal: possession and safety over chaos — you rarely get burned for an odd-man rush.",
+      "why_this_over_2_1_2": "Cross-referenced coaching sources warn the 2-1-2 (two forwards deep) gives disciplined U13+ teams a free breakout the other way. The 1-2-2 keeps numbers back, which is why it's repeatedly called the ideal youth forecheck. Introduced here as the Peewee-tier forecheck for that reason.",
+      "positions": [
+        { "role": "F1", "job": "First forward in. Pressures the puck-carrier with speed and steers them to ONE side of the ice (usually the boards)." },
+        { "role": "F2 & F3", "job": "Stay above the puck in the middle layer. Take away the boards pass and the middle lane. Read F1's angle and jump the pass on their side." },
+        { "role": "D1 & D2", "job": "Hold the blue line. Kill (knock down) anything chipped past the forwards. Be selective about pinching." }
+      ],
+      "variants": [
+        { "label": "1-2-2 Passive / Trap", "note": "F1 hangs back more; team funnels play and waits. Used to protect a lead." },
+        { "label": "1-2-2 Aggressive ('Fooseball')", "note": "F1 forces puck to the weak side where F3 pressures; forwards rotate like a foosball table. Used to force turnovers." }
+      ],
+      "questions": [
+        {
+          "id": "fc122-q1",
+          "verified": true,
+          "type": "multiple_choice",
+          "prompt": "In a 1-2-2 forecheck, how many forwards go deep to chase the puck?",
+          "options": ["One (F1)", "Two (F1 and F2)", "All three", "None"],
+          "answer": "One (F1)",
+          "why": "Only F1 pressures deep. F2 and F3 stay higher in the middle — that's what keeps the team safe from odd-man rushes.",
+          "sources": [
+            { "domain": "hoopsking.com", "quote": "F1 pressures the puck carrier and steers the breakout to one side", "url": "https://hoopsking.com/blogs/ice-hockey/hockey-forecheck-systems" },
+            { "domain": "pwice.com", "quote": "F1 is the only forward committed deep", "url": "https://www.pwice.com/what-is-forechecking-in-hockey/" }
+          ]
+        },
+        {
+          "id": "fc122-q2",
+          "verified": true,
+          "type": "multiple_choice",
+          "prompt": "What is F1's main job as the first forechecker?",
+          "options": ["Steer the puck-carrier to one side", "Cover the front of the net", "Hold the blue line", "Wait in the neutral zone"],
+          "answer": "Steer the puck-carrier to one side",
+          "why": "F1 uses speed and angle to force the puck-carrier toward the boards, cutting off their options.",
+          "sources": [
+            { "domain": "hoopsking.com", "quote": "steers the breakout to one side of the ice", "url": "https://hoopsking.com/blogs/ice-hockey/hockey-forecheck-systems" },
+            { "domain": "coachtube.com", "quote": "A well-angled stick... can force the puck carrier... into making poor decisions", "url": "https://coachtube.com/hockey/articles/mastering-the-hockey-forecheck-6-keys-and-strategy" }
+          ]
+        },
+        {
+          "id": "fc122-q3",
+          "verified": true,
+          "type": "multiple_choice",
+          "prompt": "Where do the two defensemen (D1, D2) play in a 1-2-2?",
+          "options": ["Holding the blue line", "Deep in the corners", "In front of the opponent's net", "Behind their own goalie"],
+          "answer": "Holding the blue line",
+          "why": "The D hold the line and knock down pucks chipped past the forwards, keeping the team from getting beaten deep.",
+          "sources": [
+            { "domain": "hoopsking.com", "quote": "D1 and D2 hold the blue line and kill anything chipped past", "url": "https://hoopsking.com/blogs/ice-hockey/hockey-forecheck-systems" },
+            { "domain": "pwice.com", "quote": "two forwards set up in the neutral zone to intercept breakout attempts", "url": "https://www.pwice.com/what-is-forechecking-in-hockey/" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "bo-basic",
+      "name": "Basic Breakout",
+      "tier": "peewee",
+      "category": "breakout",
+      "zone": "defensive",
+      "summary": "How to get the puck OUT of your own zone cleanly. The defenseman grabs the puck and skates to the 'quiet zone' behind the net to buy time. Wingers get to the wall near the face-off dots as targets. The center swings low and slow as an extra outlet. Everyone communicates and looks up ice before the puck arrives.",
+      "positions": [
+        { "role": "Defenseman (puck)", "job": "Retrieve the puck, skate to the quiet zone behind the net for time and space, then make a tape-to-tape pass. Don't just rim it blindly." },
+        { "role": "Wingers", "job": "Get to the wall near the face-off-dot/hash marks BEFORE the puck arrives. Look up ice first. Once you have it, get off the wall for more options." },
+        { "role": "Center", "job": "Stay 'low and slow' — swing deep and provide an outlet. Never turn your back and race up ice. Communicate who's open." }
+      ],
+      "variants": [
+        { "label": "Up (strong-side wall)", "note": "D passes to the winger on the boards on the same side. Default option." },
+        { "label": "Over / Reverse", "note": "D moves the puck to the other side (behind the net) when the strong side is flooded." },
+        { "label": "Rim", "note": "Under hard forecheck pressure, send the puck hard around the boards to the winger." },
+        { "label": "Wheel", "note": "D skates the puck out behind the net and up the far side." }
+      ],
+      "questions": [
+        {
+          "id": "bo-q1",
+          "verified": true,
+          "type": "multiple_choice",
+          "prompt": "After getting the puck, where should a defenseman often go to buy time and space?",
+          "options": ["The 'quiet zone' behind the net", "Straight up the middle", "Into the corner", "Toward the opponent's bench"],
+          "answer": "The 'quiet zone' behind the net",
+          "why": "Skating to the soft area behind the net gives the forwards time to get open and gives the D a clean look.",
+          "sources": [
+            { "domain": "beerleaguetips.com", "quote": "skating to a soft area of the ice, often the 'quiet zone' behind the net", "url": "https://beerleaguetips.com/article/basic-breakout-strategy/" },
+            { "domain": "kellianhockey.com", "quote": "If unsure, head to the 'quiet zone' (behind the net)", "url": "https://www.kellianhockey.com/hockey-concepts" }
+          ]
+        },
+        {
+          "id": "bo-q2",
+          "verified": true,
+          "type": "multiple_choice",
+          "prompt": "How should the center support the breakout?",
+          "options": ["Stay 'low and slow' as an outlet", "Race up ice ahead of the puck", "Stand at the blue line", "Cover the front of the net"],
+          "answer": "Stay 'low and slow' as an outlet",
+          "why": "The center swings low and times their route to be an easy outlet, rather than turning their back and speeding away.",
+          "sources": [
+            { "domain": "icehockeysystems.com", "quote": "Stay low and slow - you need to provide an outlet", "url": "https://www.icehockeysystems.com/practice/1/1684806" },
+            { "domain": "kellianhockey.com", "quote": "Centers need to swing low to initiate a breakout", "url": "https://www.kellianhockey.com/hockey-concepts" }
+          ]
+        },
+        {
+          "id": "bo-q3",
+          "verified": true,
+          "type": "multiple_choice",
+          "prompt": "What should a winger do BEFORE the puck reaches them on a breakout?",
+          "options": ["Get to the wall and look up ice", "Skate to the front of the net", "Go to the bench", "Chase the puck-carrier"],
+          "answer": "Get to the wall and look up ice",
+          "why": "Getting to the wall early gives a passing target; looking up ice first lets the winger decide to carry, pass, or chip out.",
+          "sources": [
+            { "domain": "icehockeysystems.com", "quote": "Get to the wall - before the puck gets to your spot", "url": "https://www.icehockeysystems.com/blog/coaching-tips/tips-drills-improve-your-defensive-zone-breakout" },
+            { "domain": "thehockeyguys.net", "quote": "wings have started to exit the zone, without the puck", "url": "https://thehockeyguys.net/breakout-strategy-in-hockey/" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "dz-protect-house",
+      "name": "Defensive Zone Coverage – Protect the House",
+      "tier": "peewee",
+      "category": "defensive-zone-coverage",
+      "zone": "defensive",
+      "summary": "How your five players cover your own end. 'The house' is the high-danger box in front of your net (connect the four face-off dots to the goal posts). Your whole job is to keep opponents and the puck OUT of that box and push them to the boards. Defensemen play low and protect the net-front and corners; forwards cover higher and support down low. Communicate every puck touch.",
+      "positions": [
+        { "role": "Defensemen", "job": "Play low (top of circles to goal line). Strong-side D takes the corner/net-front battle on the puck side; weak-side D protects the middle of the house and far post, ready to slide across." },
+        { "role": "F1", "job": "Support the puck-side defenseman / pressure the puck low." },
+        { "role": "F2", "job": "Strong side — get into the shooting lane of the point, take away the shot." },
+        { "role": "F3", "job": "Support / 'slide' player. Covers the middle and helps if someone gets beaten or falls; picks up an activating D2." }
+      ],
+      "variants": [
+        { "label": "Zone coverage", "note": "Players cover areas of the ice (used by most youth teams — simpler)." },
+        { "label": "Man-to-man", "note": "Each player covers a specific opponent." },
+        { "label": "Hybrid", "note": "Mix of both — more advanced, better for bantam+." }
+      ],
+      "questions": [
+        {
+          "id": "dz-q1",
+          "verified": true,
+          "type": "multiple_choice",
+          "prompt": "What is 'the house' in defensive zone coverage?",
+          "options": ["The high-danger area in front of your net", "The penalty box", "Your team's bench", "The neutral zone"],
+          "answer": "The high-danger area in front of your net",
+          "why": "It's the box from the face-off dots to the goal posts — the most dangerous scoring area. Your job is to keep the puck and opponents out of it.",
+          "sources": [
+            { "domain": "betterhockey.com", "quote": "The house is the box you get when you connect the four face-off dots to the goal posts", "url": "https://www.betterhockey.com/blogs/hockey-training/defensive-zone-positioning" },
+            { "domain": "icehockeysystems.com", "quote": "it's very, very important that we protect this area", "url": "https://www.icehockeysystems.com/hockey-systems/defensive-zone-coverage-protect-house" }
+          ]
+        },
+        {
+          "id": "dz-q2",
+          "verified": true,
+          "type": "multiple_choice",
+          "prompt": "Which players are mainly responsible for protecting the front of the net?",
+          "options": ["The defensemen", "The wingers", "The center only", "The goalie alone"],
+          "answer": "The defensemen",
+          "why": "Defensemen play low and protect the net-front and corners; forwards cover higher and support down low.",
+          "sources": [
+            { "domain": "betterhockey.com", "quote": "Defensemen protect the front of the net and the corners on their side", "url": "https://www.betterhockey.com/blogs/hockey-training/defensive-zone-positioning" },
+            { "domain": "rinkhive.com", "quote": "cover both the front of the net and a potential cross-ice pass", "url": "https://training.rinkhive.com/2026/03/16/defensive-zone-coverage-habits-positioning-stick-responsibility/" }
+          ]
+        },
+        {
+          "id": "dz-q3",
+          "verified": true,
+          "type": "multiple_choice",
+          "prompt": "Where should you try to force the opposing puck-carrier?",
+          "options": ["Toward the boards, away from the middle", "Into the slot", "Toward your own net", "Behind your goalie"],
+          "answer": "Toward the boards, away from the middle",
+          "why": "You keep the puck out of the dangerous middle by steering opponents to the outside where a shot is much less dangerous.",
+          "sources": [
+            { "domain": "betterhockey.com", "quote": "keep opponents and the puck out of it and force play toward the boards", "url": "https://www.betterhockey.com/blogs/hockey-training/defensive-zone-positioning" },
+            { "domain": "icehockeysystems.com", "quote": "we want to protect the house", "url": "https://www.icehockeysystems.com/hockey-systems/defensive-zone-coverage-protect-house" }
+          ]
+        }
+      ]
+    }
+  ]
+}
