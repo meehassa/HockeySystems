@@ -5,8 +5,9 @@
 (function () {
   'use strict';
 
-  var BEAT_MS = 900;
-  var SEEK_MS = 450;
+  var BEAT_MS = 1400;
+  var HOLD_MS = 550; // pause at each beat so the caption has time to land before the next move
+  var SEEK_MS = 500;
 
   function lerp(a, b, t) { return a + (b - a) * t; }
   function easeInOutQuad(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
@@ -25,6 +26,7 @@
     var beatIndex = 0;
     var isPlaying = false;
     var rafId = null;
+    var holdTimer = null;
 
     function setPositions(positions) {
       actors.forEach(function (a) {
@@ -37,6 +39,7 @@
 
     function cancelTween() {
       if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+      if (holdTimer !== null) { clearTimeout(holdTimer); holdTimer = null; }
     }
 
     function tweenTo(targetIndex, duration, done) {
@@ -77,7 +80,7 @@
       }
       tweenTo(beatIndex + 1, BEAT_MS, function () {
         onBeatChange(beatIndex);
-        if (isPlaying) advance();
+        if (isPlaying) holdTimer = setTimeout(advance, HOLD_MS);
       });
     }
 

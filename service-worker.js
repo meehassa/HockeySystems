@@ -1,5 +1,5 @@
 // Bump this on every deploy so clients pick up the new files.
-var CACHE_NAME = 'hockey-systems-v5';
+var CACHE_NAME = 'hockey-systems-v6';
 
 var PRECACHE_URLS = [
   './',
