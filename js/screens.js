@@ -146,10 +146,22 @@
     if (!system) return header('Not found', 'library') + '<p class="empty-state">System not found.</p>';
     var profile = ctx.profile;
     var m = HS.mastery.systemMastery(profile, system);
+    var positions = system.positions || [];
+    var selectedIndex = (typeof ctx.selectedRoleIndex === 'number') ? ctx.selectedRoleIndex : -1;
+    var selected = positions[selectedIndex] || null;
 
-    var positions = (system.positions || []).map(function (p) {
-      return '<li><strong>' + esc(p.role) + '.</strong> ' + esc(p.job) + '</li>';
+    var roleChips = positions.map(function (p, i) {
+      var active = i === selectedIndex;
+      return '' +
+        '<button class="role-chip' + (active ? ' role-chip-active' : '') + '" data-nav="select-role" data-role-index="' + i + '">' +
+          '<span class="role-chip-num">' + (i + 1) + '</span>' +
+          '<span class="role-chip-name">' + esc(p.role) + '</span>' +
+        '</button>';
     }).join('');
+
+    var jobCard = selected
+      ? '<div class="job-card job-card-active"><span class="job-card-role">' + esc(selected.role) + '</span><p class="job-card-text">' + esc(selected.job) + '</p></div>'
+      : '<div class="job-card job-card-hint">👆 Tap a number on the ice — or a position below — to see their job.</div>';
 
     var variants = (system.variants || []).length
       ? '<section class="detail-section"><h3>Variants</h3><ul class="variant-list">' +
@@ -163,14 +175,18 @@
       '<div class="screen screen-detail">' +
         header(system.name, 'library') +
         '<div class="scroll-area">' +
-          HS.rink.renderRink(system.zone) +
           '<div class="detail-tags">' +
             '<span class="tag">' + categoryEmoji(system.category) + ' ' + esc(HS.data.categoryLabel(system.category)) + '</span>' +
             '<span class="tag">' + esc(system.tier) + '</span>' +
             '<span class="tag tag-pct">' + m.pct + '% known</span>' +
           '</div>' +
           '<p class="detail-summary">' + esc(system.summary) + '</p>' +
-          '<section class="detail-section"><h3>Who does what</h3><ul class="position-list">' + positions + '</ul></section>' +
+          '<section class="detail-section">' +
+            '<h3>Tap the ice to see who does what</h3>' +
+            HS.rink.renderRink(system.zone, positions, selectedIndex) +
+            jobCard +
+            '<div class="role-chip-row">' + roleChips + '</div>' +
+          '</section>' +
           variants +
           '<button class="big-btn big-btn-primary" data-nav="quiz-start" data-system-id="' + esc(system.id) + '">' +
             '<span class="big-btn-emoji">❓</span><span>Quiz This System</span>' +

@@ -112,6 +112,11 @@
     render();
   }
 
+  function selectRole(index) {
+    state.params.selectedRoleIndex = index;
+    render();
+  }
+
   // ---------- Central click handling ----------
   appEl.addEventListener('click', function (e) {
     var el = e.target.closest('[data-nav]');
@@ -132,6 +137,7 @@
       case 'quiz-flag': flagCurrentQuestion(); break;
       case 'tier-set': setTier(el.dataset.tier); break;
       case 'reset-test-profile': resetTestProfile(); break;
+      case 'select-role': selectRole(Number(el.dataset.roleIndex)); break;
       case 'back': history.length > 1 ? history.back() : go('home'); break;
       default: break;
     }
