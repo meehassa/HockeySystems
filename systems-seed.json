@@ -7,6 +7,7 @@
       "variants": "Where sources legitimately differ (e.g. aggressive vs passive), store BOTH as labeled variants. Do NOT quiz on the contested detail — only on shared fundamentals.",
       "no_quote_no_verify": "A fact is never marked verified without the actual source text stored beside it."
     },
+    "animation_note": "Optional per-system 'animation' block drives the 'Watch It Happen' replay in the app. It is a presentational visualization derived from the system's own summary/positions text, NOT a sourced fact — it never needs quotes/sources and doesn't affect verified:true scoring. Coordinate space matches the app's rink SVG: viewBox 0-200 (x) by 0-100 (y); defensive zone is x 2-67, neutral zone x 67-133, offensive zone x 133-198; y 2-98 top-to-bottom. Shape: { actors: [{id, label, positionRole}], beats: [{caption, positions: {actorId: [x,y], ...}}] }. Each actor's positionRole must match a string in this system's positions[].role exactly, so tapping an actor's dot in the app can show its job text (grouped roles like 'F2 & F3' get split into separate actors — e.g. F2 and F3 — that both point at the same positionRole). Systems without an animation block just fall back to the static tap-to-explore view — it's optional, not required to add a new system.",
     "tiers": {
       "peewee": "12U. Foundational only: basic breakouts, regroups, simple forechecks, basic D-zone coverage. One concept at a time. No formal special teams.",
       "bantam": "14U. Adds neutral-zone play, layered D-zone, power play, penalty kill, faceoff plays."
@@ -32,6 +33,34 @@
         { "label": "1-2-2 Passive / Trap", "note": "F1 hangs back more; team funnels play and waits. Used to protect a lead." },
         { "label": "1-2-2 Aggressive ('Fooseball')", "note": "F1 forces puck to the weak side where F3 pressures; forwards rotate like a foosball table. Used to force turnovers." }
       ],
+      "animation": {
+        "actors": [
+          { "id": "puck", "label": "🏒", "positionRole": null },
+          { "id": "F1", "label": "F1", "positionRole": "F1" },
+          { "id": "F2", "label": "F2", "positionRole": "F2 & F3" },
+          { "id": "F3", "label": "F3", "positionRole": "F2 & F3" },
+          { "id": "D1", "label": "D1", "positionRole": "D1 & D2" },
+          { "id": "D2", "label": "D2", "positionRole": "D1 & D2" }
+        ],
+        "beats": [
+          {
+            "caption": "The puck gets dumped deep into the corner.",
+            "positions": { "D1": [134, 15], "F2": [152, 30], "F1": [175, 48], "F3": [152, 66], "D2": [134, 85], "puck": [190, 40] }
+          },
+          {
+            "caption": "F1 pressures the puck-carrier and steers them to the boards.",
+            "positions": { "puck": [190, 14], "F1": [178, 18], "F2": [155, 28], "F3": [150, 55], "D1": [134, 22], "D2": [134, 80] }
+          },
+          {
+            "caption": "F2 & F3 stay above the puck, cutting off the middle and the boards pass.",
+            "positions": { "puck": [186, 18], "F1": [172, 22], "F2": [158, 8], "F3": [150, 58], "D1": [134, 25], "D2": [134, 75] }
+          },
+          {
+            "caption": "D1 & D2 hold the blue line, ready to kill anything chipped past.",
+            "positions": { "puck": [182, 24], "F1": [168, 26], "F2": [158, 8], "F3": [150, 58], "D1": [137, 20], "D2": [137, 80] }
+          }
+        ]
+      },
       "questions": [
         {
           "id": "fc122-q1",
@@ -93,6 +122,33 @@
         { "label": "Rim", "note": "Under hard forecheck pressure, send the puck hard around the boards to the winger." },
         { "label": "Wheel", "note": "D skates the puck out behind the net and up the far side." }
       ],
+      "animation": {
+        "actors": [
+          { "id": "puck", "label": "🏒", "positionRole": null },
+          { "id": "D", "label": "D", "positionRole": "Defenseman (puck)" },
+          { "id": "LW", "label": "LW", "positionRole": "Wingers" },
+          { "id": "RW", "label": "RW", "positionRole": "Wingers" },
+          { "id": "C", "label": "C", "positionRole": "Center" }
+        ],
+        "beats": [
+          {
+            "caption": "The D retrieves the puck below the goal line.",
+            "positions": { "puck": [14, 50], "D": [16, 52], "LW": [45, 18], "RW": [45, 82], "C": [40, 55] }
+          },
+          {
+            "caption": "D skates to the 'quiet zone' behind the net for time and space.",
+            "positions": { "puck": [22, 50], "D": [24, 50], "LW": [48, 18], "RW": [48, 82], "C": [38, 58] }
+          },
+          {
+            "caption": "Wingers get to the wall early and look up ice before the puck arrives.",
+            "positions": { "puck": [24, 50], "D": [24, 50], "LW": [52, 16], "RW": [52, 84], "C": [33, 66] }
+          },
+          {
+            "caption": "D hits the strong-side winger, and the center trails low as a safety outlet.",
+            "positions": { "puck": [80, 16], "D": [30, 50], "LW": [88, 16], "RW": [55, 84], "C": [55, 45] }
+          }
+        ]
+      },
       "questions": [
         {
           "id": "bo-q1",
@@ -154,6 +210,34 @@
         { "label": "Man-to-man", "note": "Each player covers a specific opponent." },
         { "label": "Hybrid", "note": "Mix of both — more advanced, better for bantam+." }
       ],
+      "animation": {
+        "actors": [
+          { "id": "puck", "label": "🏒", "positionRole": null },
+          { "id": "D1", "label": "D1", "positionRole": "Defensemen" },
+          { "id": "D2", "label": "D2", "positionRole": "Defensemen" },
+          { "id": "F1", "label": "F1", "positionRole": "F1" },
+          { "id": "F2", "label": "F2", "positionRole": "F2" },
+          { "id": "F3", "label": "F3", "positionRole": "F3" }
+        ],
+        "beats": [
+          {
+            "caption": "The puck is below the goal line — the strong-side D battles for it.",
+            "positions": { "puck": [22, 84], "D1": [18, 80], "D2": [18, 20], "F1": [33, 68], "F2": [45, 15], "F3": [38, 48] }
+          },
+          {
+            "caption": "F1 supports down low, pressuring the puck alongside the D.",
+            "positions": { "puck": [24, 76], "D1": [22, 78], "D2": [18, 22], "F1": [32, 62], "F2": [45, 15], "F3": [42, 45] }
+          },
+          {
+            "caption": "F2 gets into the point's shooting lane on the strong side.",
+            "positions": { "puck": [26, 72], "D1": [24, 76], "D2": [18, 22], "F1": [32, 62], "F2": [38, 12], "F3": [42, 45] }
+          },
+          {
+            "caption": "F3 slides to the middle, ready to help if someone gets beaten.",
+            "positions": { "puck": [26, 70], "D1": [24, 76], "D2": [18, 22], "F1": [32, 62], "F2": [38, 12], "F3": [34, 40] }
+          }
+        ]
+      },
       "questions": [
         {
           "id": "dz-q1",
